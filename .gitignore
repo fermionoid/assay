@@ -1,0 +1,17 @@
+# assay is the tool. Real personal context must NEVER enter this repo.
+# Real context lives in ~/.assay/ (or $ASSAY_DIR), outside this directory.
+
+# Belt-and-suspenders: refuse to track a context dir if one is ever created here.
+/.assay/
+**/.assay/
+# ...except the deliberately-empty generic example shipped with the tool.
+!/example/.assay/
+!/example/.assay/**
+
+# Maintainer's private working notes (design decisions, dogfooding state).
+# Personal process, not part of the published tool.
+/private/
+
+# OS / editor cruft
+.DS_Store
+*.swp

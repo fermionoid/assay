@@ -1,0 +1,19 @@
+# assay context config
+#
+# This is a GENERIC EXAMPLE shipped with the assay repo. It is not real data.
+# To start your own context: cp -r example/.assay ~/.assay, then edit this file.
+#
+# Rename the placeholder branches below to areas of YOUR life or work.
+# `self` and `work` are stand-ins, not a recommended taxonomy. Start small.
+
+branches:
+  - self   # placeholder, rename me
+  - work   # placeholder, rename me
+
+# How often you run the `review` and `nudge` rituals by hand.
+# weekly is a sane floor. It is not a deadline for every bet, just for attention.
+review_cadence: weekly
+
+# Model settings are intentionally empty in v0. The substrate is plain text and
+# is read by whatever model you point at it. No model is configured or required.
+model: {}

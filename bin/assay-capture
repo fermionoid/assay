@@ -1,0 +1,66 @@
+#!/bin/sh
+# assay-capture: append a timestamped raw capture to a branch's inbox.md
+#
+# This is the ONLY helper script in assay v0. It does one thing: capture.
+# It applies no judgment. Keeping is a separate, deliberate, by-hand act.
+#
+# Usage:
+#   assay-capture [--dir <context-dir>] <branch> <text...>
+#
+# Context directory resolution, in order:
+#   1. --dir <path>
+#   2. $ASSAY_DIR
+#   3. ~/.assay        (default; NEVER the repo's example/ directory)
+#
+# Examples:
+#   assay-capture self "idea worth not forgetting yet"
+#   ASSAY_DIR=~/.assay assay-capture work "vendor said API freezes in Q3"
+#   assay-capture --dir /tmp/ctx self "scratch capture"
+
+set -eu
+
+prog=$(basename "$0")
+
+usage() {
+  cat >&2 <<EOF
+usage: $prog [--dir <context-dir>] <branch> <text...>
+
+Appends "- [ISO8601] <text>" to <context-dir>/branches/<branch>/inbox.md
+
+context dir: --dir, else \$ASSAY_DIR, else ~/.assay
+EOF
+  exit 2
+}
+
+dir=""
+if [ "${1:-}" = "--dir" ]; then
+  [ $# -ge 2 ] || usage
+  dir=$2
+  shift 2
+fi
+
+[ $# -ge 2 ] || usage
+
+branch=$1
+shift
+text="$*"
+
+# Resolve context directory.
+if [ -z "$dir" ]; then
+  dir=${ASSAY_DIR:-"$HOME/.assay"}
+fi
+
+inbox="$dir/branches/$branch/inbox.md"
+
+if [ ! -d "$dir/branches/$branch" ]; then
+  echo "$prog: no such branch '$branch' in $dir" >&2
+  echo "$prog: expected directory $dir/branches/$branch" >&2
+  exit 1
+fi
+
+# ISO8601 timestamp with local offset. -u would force UTC; we keep local time.
+ts=$(date +%Y-%m-%dT%H:%M:%S%z)
+
+printf -- '- [%s] %s\n' "$ts" "$text" >> "$inbox"
+
+echo "captured to $inbox"

@@ -1,0 +1,12 @@
+{
+  "id": "<branch>-<YYYYMMDD>-<short-slug>",
+  "keep": "<title or short ref of the kept item>",
+  "branch": "<branch>",
+  "claim": "<the falsifiable expectation, restated from the keep's bet>",
+  "created": "<YYYY-MM-DD>",
+  "check_by": "<YYYY-MM-DD>",
+  "status": "open",
+  "resolved_on": null,
+  "outcome": null,
+  "note": null
+}
