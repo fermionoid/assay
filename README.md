@@ -65,7 +65,7 @@ example/.assay/  (empty demo)      log/bets.jsonl
 
 A **branch** is a context boundary, like a git branch is a line of work. Keep a couple. Do not pre-plan a taxonomy.
 
-Full record formats are in [SPEC.md](SPEC.md). Filled synthetic examples are in [docs/worked-examples.md](docs/worked-examples.md).
+Full record formats are in [SPEC.md](SPEC.md). Filled synthetic examples are in [docs/worked-examples.md](docs/worked-examples.md). Claim-writing patterns for the different kinds of judgment — events, slow trends, decisions, people, self, kept information — are in [docs/bet-patterns.md](docs/bet-patterns.md).
 
 ## Quickstart: dogfood it by hand
 
