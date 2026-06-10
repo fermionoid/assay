@@ -87,6 +87,46 @@ else
   no "multi-word text mangled"
 fi
 
+# 9. Branch names with path separators are rejected (no traversal escape).
+if "$capture" --dir "$tmp" "self/../.." "escape attempt" >/dev/null 2>&1; then
+  no "traversal branch name should have failed but exited 0"
+elif [ -f "$tmp/inbox.md" ] || [ -f "$(dirname "$tmp")/inbox.md" ]; then
+  no "traversal branch name wrote outside branches/"
+else
+  ok "branch names with / are rejected"
+fi
+
+# 10. '..' alone as a branch name is rejected.
+if "$capture" --dir "$tmp" ".." "dotdot" >/dev/null 2>&1; then
+  no "'..' branch name should have failed but exited 0"
+else
+  ok "'..' branch name is rejected"
+fi
+
+# 11. Newlines in the text are collapsed; the capture stays one line.
+before=$(wc -l < "$tmp/branches/self/inbox.md")
+"$capture" --dir "$tmp" self "line one
+line two folded" >/dev/null
+after=$(wc -l < "$tmp/branches/self/inbox.md")
+if [ "$after" -eq $((before + 1)) ]; then
+  if tail -n 1 "$tmp/branches/self/inbox.md" | grep -q "line one line two folded"; then
+    ok "newlines in text are collapsed to one line"
+  else
+    no "newline text mangled: $(tail -n 1 "$tmp/branches/self/inbox.md")"
+  fi
+else
+  no "newline text added $((after - before)) lines instead of 1"
+fi
+
+# 12. A missing context dir fails with a message that names the real problem.
+gone="$tmp/does-not-exist"
+err=$("$capture" --dir "$gone" self "nope" 2>&1) && rc=0 || rc=$?
+if [ "$rc" -ne 0 ] && echo "$err" | grep -q "context dir"; then
+  ok "missing context dir exits non-zero and says so"
+else
+  no "missing context dir gave wrong error: $err"
+fi
+
 echo
 echo "passed: $pass  failed: $fail"
 [ "$fail" -eq 0 ]

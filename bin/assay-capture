@@ -43,7 +43,19 @@ fi
 
 branch=$1
 shift
-text="$*"
+
+# A branch is a single directory name under branches/. Anything with a path
+# separator (or . / ..) could escape the context dir, so refuse it.
+case $branch in
+  ''|.|..|*/*)
+    echo "$prog: invalid branch name '$branch' (must be a plain directory name)" >&2
+    exit 1
+    ;;
+esac
+
+# Inbox lines are "- [ISO8601] text", one capture per line. Collapse any
+# newlines in the text so a multi-line paste cannot break the line format.
+text=$(printf '%s' "$*" | tr '\r\n' '  ')
 
 # Resolve context directory.
 if [ -z "$dir" ]; then
@@ -51,6 +63,12 @@ if [ -z "$dir" ]; then
 fi
 
 inbox="$dir/branches/$branch/inbox.md"
+
+if [ ! -d "$dir" ]; then
+  echo "$prog: context dir $dir does not exist" >&2
+  echo "$prog: create one first, e.g.: cp -r example/.assay ~/.assay" >&2
+  exit 1
+fi
 
 if [ ! -d "$dir/branches/$branch" ]; then
   echo "$prog: no such branch '$branch' in $dir" >&2
